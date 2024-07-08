@@ -1,8 +1,29 @@
-<<<<<<< HEAD
 # realtime-messenger-app
  Building a full stack realtime chat app with NextJS 13.  Using Upstash Redis as our database, React for the user interface, and write our code in TypeScript. By the end of the video, a super-performant realtime chat app deployed to the web, ready to be used by actual users. 
-=======
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+
+
+---
+
+## Project Development Tech used:
+---
+- Next JS 13 + Typescript as language.
+- Tailwind Css (CSS Framework)
+- __lucide-react__ (Icon Dependency)
+---
+## Create Reusable Button Component 
+####    *If we want to create a reusable button variance where we can define different varients for any component like button here and that button can be act as outline 
+button, destructive button, Default button*
+1. Install class-variance-authority
+
+---
+####    *To pass className as props to any react component we create a utility function that takes ClassValue[] as input props type and to make this utility function we need to install 2 libraries:*
+ 
+ ### 1. __clsx__ For Conditional class names.
+ ### 2. __tailwind-merge__ To merge tailwind classes together. (optimize the tailwind code)
+
+
 
 ## Getting Started
 
@@ -38,4 +59,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
->>>>>>> c149665 (initialize next app)
