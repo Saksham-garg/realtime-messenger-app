@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9e47aaa0d9a94adc17fa0104cea5b7938609db76
 # realtime-messenger-app
  Building a full stack realtime chat app with NextJS 13.  Using Upstash Redis as our database, React for the user interface, and write our code in TypeScript. By the end of the video, a super-performant realtime chat app deployed to the web, ready to be used by actual users. 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
