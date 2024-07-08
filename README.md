@@ -11,6 +11,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - Next JS 13 + Typescript as language.
 - Tailwind Css (CSS Framework)
 - __lucide-react__ (Icon Dependency)
+- react-hot-toast ( For Alerts)
+- react-hook-forms (For handling forms in react)
+- zod ( For input validation)
+
 ---
 ## Create Reusable Button Component 
 ####    *If we want to create a reusable button variance where we can define different varients for any component like button here and that button can be act as outline 
