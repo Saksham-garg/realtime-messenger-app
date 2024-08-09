@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast'
 
 const Login:React.FC = () => {
 
-    const [ isLoading,setIsLoading ] = useState<Boolean>(false) 
+    const [ isLoading,setIsLoading ] = useState<boolean>(false) 
 
     const handleGoogleSignIn = async() => {
         setIsLoading(true)
