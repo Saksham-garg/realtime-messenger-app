@@ -36,9 +36,9 @@ export const authOptions: NextAuthOptions = {
     secret:process.env.NEXTAUTH_URL,
     callbacks:{
         async jwt({token,user}){
-            const dbUserResult = `user:${token.id}` as
-            | string
-            | null
+
+            const dbUserResult = ( await db.get(`user:${token.id}`) ) as User | null
+
             // const dbUserResult =  (await fetchRedis('get', `user:${token.id}`)) as
             // | string
             // | null
@@ -50,13 +50,13 @@ export const authOptions: NextAuthOptions = {
         
                 return token
               }
-              const dbUser = JSON.parse(dbUserResult) as User
+            //   const dbUser = JSON.parse(dbUserResult) as User
 
               return {
-                id: dbUser.id,
-                name: dbUser.name,
-                email: dbUser.email,
-                picture: dbUser.image,
+                id: dbUserResult.id,
+                name: dbUserResult.name,
+                email: dbUserResult.email,
+                picture: dbUserResult.image,
               }
         },
         async session({ session, token }) {
