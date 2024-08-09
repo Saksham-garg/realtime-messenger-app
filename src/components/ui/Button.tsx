@@ -3,7 +3,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { Loader2 } from 'lucide-react'
 import { cn } from "@/utils/utils";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,VariantProps<typeof ButtonVariants>{
-   isLoading?: Boolean
+   isLoading?: boolean
 }
 
 
