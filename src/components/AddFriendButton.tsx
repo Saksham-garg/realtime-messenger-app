@@ -11,7 +11,7 @@ const AddFriendButton:React.FC = () => {
 
   type FormData = z.infer<typeof addFriendValidator>
 
-  const [ showSuccessMessage,setShowSuccessMessage ] = useState<Boolean>(false)
+  const [ showSuccessMessage,setShowSuccessMessage ] = useState<boolean>(false)
 
   const { register,handleSubmit,setError,formState:{errors} } = useForm<FormData>({
     resolver: zodResolver(addFriendValidator)
@@ -21,14 +21,14 @@ const AddFriendButton:React.FC = () => {
     try {
       const validatedEmail = addFriendValidator.parse({email})
 
-      await axios.post('api/friend/add',{
+      await axios.post('/api/friend/add',{
         email:validatedEmail
       })
 
       setShowSuccessMessage(true)
     } catch (error) {
         if(error instanceof AxiosError){
-          setError('email',{message:error.response?.data})
+          setError('email',{ message:error.response?.data })
           return
         }
 
