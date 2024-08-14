@@ -1,8 +1,10 @@
 "use client"
 
+import { pusherClient } from '@/utils/pusher'
+import { pusherKey } from '@/utils/utils'
 import { User } from 'lucide-react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 
 type Props = {
     sessionId: string,
@@ -11,6 +13,20 @@ type Props = {
 
 const FriendRequestsSidebarOptions = ({ sessionId, initialFriendRequests }: Props) => {
     const [initialUnseenRequests, setInitialUnseenRequests] = useState<number>(initialFriendRequests)
+    useEffect(() => {
+        pusherClient.subscribe(pusherKey(`user:${sessionId}:incoming_friend_requests`))
+      
+        const friendRequestHandler = () => {
+            setInitialUnseenRequests((prev) => prev + 1)
+        }
+  
+        pusherClient.bind('incoming_friend_requests',friendRequestHandler)
+        
+        return () => {
+          pusherClient.unsubscribe(pusherKey(`user:${sessionId}:incoming_friend_requests`))
+          pusherClient.unbind('incoming_friend_requests',friendRequestHandler)
+        }
+      }, [])
     return (
         <Link href={"/dashboard/requests"}
             className='text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'>
