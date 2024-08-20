@@ -1,6 +1,8 @@
 import { fetchRedis } from "@/helpers/redis"
 import { authOptions } from "@/utils/auth"
 import db from "@/utils/db"
+import { pusherServer } from "@/utils/pusher"
+import { pusherKey } from "@/utils/utils"
 import { messageValidator } from "@/utils/validators/message"
 import { nanoid } from "nanoid"
 import { getServerSession } from "next-auth"
@@ -42,6 +44,12 @@ export async function POST(req: Request){
             return new Response("Cannot send message to unknown user.",{ status: 400 })
         }
 
+
+        const rawSender = (await fetchRedis(
+            'get',
+            `user:${session.user.id}`
+        )) as string
+        const sender = JSON.parse(rawSender) as User
         // send message
 
         const timestamp = Date.now()
@@ -55,6 +63,13 @@ export async function POST(req: Request){
         }
 
         const message = messageValidator.parse(messageData)
+
+        await pusherServer.trigger(pusherKey(`user:${chatId}`),'incoming-message',message)
+        await pusherServer.trigger(pusherKey(`user:${friendId}:chats`),'new_messsage',{
+            ...message,
+            senderImg:sender.image,
+            senderName:sender.name
+        })
 
         await db.zadd(`chat:${chatId}:messages`,{
             score:timestamp,
