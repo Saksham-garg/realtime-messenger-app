@@ -10,21 +10,17 @@ import  FriendRequestsSidebarOptions from '@/components/FriendRequestsSidebarOpt
 import { fetchRedis } from '@/helpers/redis'
 import getFriendsByUserID from '@/helpers/get-friends-userid'
 import SidebarChatList from '@/components/SidebarChatList'
+import MobileChatLayout from '@/components/MobileChatLayout'
+import { SidebarOption } from '@/types/typings'
 
 type Props = {
     children:React.ReactNode
 }
 
-interface SideBarTabs {
-    id: string,
-    name:string,
-    href:string,
-    Icon: Icon
-}
 
-const sidebarTabs: SideBarTabs[] = [
+const sidebarTabs: SidebarOption[] = [
     {
-        id:"1",
+        id:1,
         name:'Add friend',
         href:'/dashboard/add',
         Icon: 'UserPlus'
@@ -42,7 +38,15 @@ async function layout({ children }: Props) {
 
   return (
     <div className='w-full h-screen flex'>
-        <div className='flex w-full h-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6'>
+        <div className='md:hidden'>
+            <MobileChatLayout
+            friends={friends}
+            session={session}
+            sidebarOptions={sidebarTabs}
+            unseenRequestCount={unseenFriendRequests}
+            />
+        </div>
+        <div className='hidden md:flex w-full h-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6'>
             <Link href={'/dashboard'} className='flex h-16 items-center'>
                 <Icons.Logo className='h-8 auto text-indigo-600'/>
             </Link>
@@ -112,7 +116,7 @@ async function layout({ children }: Props) {
                 </ul>
             </nav>
         </div>
-        { children}
+        <aside className='container py-12 sm:py-16 max-h-screen'>{ children}</aside>
     </div>
   )
 }
