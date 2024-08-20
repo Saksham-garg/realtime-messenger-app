@@ -7,7 +7,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,Var
 }
 
 
-const ButtonVariants = cva(
+export const ButtonVariants = cva(
     'active:scale-95 inline-flex justify-center items-center rounded-md text-sm font-medium transition-color focus:ring-2 focus:outline-none focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
     {
         variants:{
