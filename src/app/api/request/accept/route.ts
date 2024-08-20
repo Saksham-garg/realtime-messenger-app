@@ -1,6 +1,8 @@
 import { fetchRedis } from "@/helpers/redis"
 import { authOptions } from "@/utils/auth"
 import db from "@/utils/db"
+import { pusherServer } from "@/utils/pusher"
+import { pusherKey } from "@/utils/utils"
 import { getServerSession } from "next-auth"
 import { z, ZodError } from "zod"
 
@@ -30,10 +32,11 @@ export async function POST(req:Request){
             return new Response("No Friend Request",{ status: 400 })
         }
         
+        // notify added user
+        await pusherServer.trigger(pusherKey(`user:${idToAdd}:friends`),'new_friend',{})
         db.sadd(`user:${session.user.id}:friends`,idToAdd)
         db.sadd(`user:${idToAdd}:friends`,session.user.id)
         db.srem(`user:${session.user.id}:incoming_friend_request`,idToAdd)
-
         return new Response('OK')
     } catch (error) {
         console.log(error)
