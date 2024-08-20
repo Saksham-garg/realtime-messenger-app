@@ -1,22 +1,39 @@
 "use client"
 
-import { cn } from '@/utils/utils'
+import { pusherClient } from '@/utils/pusher'
+import { cn, pusherKey } from '@/utils/utils'
 import { format } from 'date-fns'
 import Image from 'next/image'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 type Props = {
   intialMessages:Message[],
   sessionId:string
   sessionImage: string | null | undefined
-  chatPartner: User
+  chatPartner: User,
+  chatId:string
 }
 
-const Messages = ({intialMessages,sessionId,sessionImage,chatPartner}: Props) => {
+const Messages = ({intialMessages,sessionId,sessionImage,chatPartner,chatId}: Props) => {
   const [ messages, setMessages ] = useState<Message[]>(intialMessages)
   
   const scollableDiv = useRef<HTMLDivElement | null>(null)
   
+  useEffect(() => {
+    pusherClient.subscribe(pusherKey(`user:${chatId}:messages`))
+  
+    const messageHandler = (message:Message) => {
+        setMessages((prev) => [message,...prev])
+    }
+
+    pusherClient.bind('incoming-message',messageHandler)
+    
+    return () => {
+      pusherClient.unsubscribe(pusherKey(`user:${chatId}:messages`))
+      pusherClient.unbind('incoming-message',messageHandler)
+    }
+  }, [chatId])
+
   return (
     <div 
     id='messages'
