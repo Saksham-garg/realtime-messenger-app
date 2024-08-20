@@ -1,12 +1,20 @@
 "use client"
 
-import { chatHrefConstructor } from '@/utils/utils'
+import { pusherClient } from '@/utils/pusher'
+import { chatHrefConstructor, pusherKey } from '@/utils/utils'
 import { usePathname, useRouter } from 'next/navigation'
 import React,{ useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import UnseenChatToast from './UnseenChatToast'
 
 type Props = {
     friends: User[],
     sessionId:string
+}
+
+interface ExtendedMessage extends Message {
+    senderImage:string
+    senderName:string
 }
 
 const SidebarChatList = ({ friends,sessionId }: Props) => {
@@ -22,6 +30,45 @@ const SidebarChatList = ({ friends,sessionId }: Props) => {
       }
     }, [pathname])
     
+    useEffect(() => {
+        pusherClient.subscribe(pusherKey(`user:${sessionId}:chats`))
+        pusherClient.subscribe(pusherKey(`user:${sessionId}:friends`))
+
+        const chatHandler = (message:ExtendedMessage) => {
+            const shouldNotify = (pathname !== `/dashboard/chat/${chatHrefConstructor(sessionId,message.senderId)}`)
+
+            if(!shouldNotify) return
+
+            toast.custom((t) => {
+                return <UnseenChatToast 
+                    t={t}
+                    sessionId={sessionId}
+                    senderId={message.senderId}
+                    senderImg={message.senderImage}
+                    senderName={message.senderName}
+                    senderMessage={message.text}
+                />
+            })
+
+            setUnseenMessages((prev) => [...prev,message])
+        }
+
+        const friendHandler = () => {
+            router.refresh()
+        }
+
+        pusherClient.bind('new_message',chatHandler)
+        pusherClient.bind('new_friend',friendHandler)
+
+        return () => {
+            pusherClient.unsubscribe(pusherKey(`user:${sessionId}:chats`))
+            pusherClient.unsubscribe(pusherKey(`user:${sessionId}:friends`))
+
+            pusherClient.unbind('new_message',chatHandler)
+            pusherClient.unbind('new_friend',friendHandler)
+        }
+    },[pathname,sessionId,router]) 
+
   return (
     <ul role='list' className='max-h-[25rem] overflow-y-auto -mx-2 space-y-1'>
         {
