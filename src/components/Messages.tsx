@@ -20,16 +20,17 @@ const Messages = ({intialMessages,sessionId,sessionImage,chatPartner,chatId}: Pr
   const scollableDiv = useRef<HTMLDivElement | null>(null)
   
   useEffect(() => {
-    pusherClient.subscribe(pusherKey(`user:${chatId}:messages`))
+    pusherClient.subscribe(pusherKey(`chat:${chatId}`))
   
     const messageHandler = (message:Message) => {
+      console.log("message",message)
         setMessages((prev) => [message,...prev])
     }
 
     pusherClient.bind('incoming-message',messageHandler)
     
     return () => {
-      pusherClient.unsubscribe(pusherKey(`user:${chatId}:messages`))
+      pusherClient.unsubscribe(pusherKey(`chat:${chatId}`))
       pusherClient.unbind('incoming-message',messageHandler)
     }
   }, [chatId])
@@ -37,7 +38,7 @@ const Messages = ({intialMessages,sessionId,sessionImage,chatPartner,chatId}: Pr
   return (
     <div 
     id='messages'
-    className='flex flex-col-reverse h-full flex-1 gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
+    className='flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
         <div ref={scollableDiv} className="">
             {
               messages?.map((message,index) => {
