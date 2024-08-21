@@ -64,7 +64,7 @@ export async function POST(req: Request){
 
         const message = messageValidator.parse(messageData)
 
-        await pusherServer.trigger(pusherKey(`user:${chatId}`),'incoming-message',message)
+        await pusherServer.trigger(pusherKey(`chat:${chatId}`),'incoming-message',message)
         await pusherServer.trigger(pusherKey(`user:${friendId}:chats`),'new_messsage',{
             ...message,
             senderImg:sender.image,
