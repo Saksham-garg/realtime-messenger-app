@@ -24,7 +24,7 @@ const Messages = ({intialMessages,sessionId,sessionImage,chatPartner,chatId}: Pr
   
     const messageHandler = (message:Message) => {
       console.log("message",message)
-        setMessages((prev) => [message,...prev])
+        setMessages((prev) => [...prev,message])
     }
 
     pusherClient.bind('incoming-message',messageHandler)
@@ -38,23 +38,24 @@ const Messages = ({intialMessages,sessionId,sessionImage,chatPartner,chatId}: Pr
   return (
     <div 
     id='messages'
-    className='flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
+    className='flex h-full flex-col-reverse flex-1 gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
         <div ref={scollableDiv} className="">
             {
               messages?.map((message,index) => {
                 const isCurrentUser = message.senderId == sessionId
-                const hasNextMessageFromSameUser = messages[index-1]?.senderId === messages[index]?.senderId
+                const hasNextMessageFromSameUser = (messages[index]?.senderId == messages[index+1]?.senderId) ? true:false
                 return (
                   <div 
                   className="chat-message"
                   key={`${message.id}-${message.timestamp}`}
                   >
+                    {hasNextMessageFromSameUser}
                     <div 
                     className={cn('flex items-center',{
                       'justify-end':isCurrentUser
                     })}
                     >
-                      <div className={cn('flex flex-col space-y-2 text-base max-w-xs mx-2',{
+                      <div className={cn('flex flex-col space-y-2 text-base max-w-xs mx-2 my-1',{
                         'order-1 items-end':isCurrentUser,
                         'order-2 items-start':!isCurrentUser
                       })}>
@@ -65,7 +66,7 @@ const Messages = ({intialMessages,sessionId,sessionImage,chatPartner,chatId}: Pr
                               'rounded-bl-none':!hasNextMessageFromSameUser && !isCurrentUser
                             })}>
                               {message.text}{' '}
-                              <span className='ml-2 text-xs text-gray-400'>
+                              <span className='ml-2 text-xs text-gray-400 '>
                                 { format(message.timestamp,"HH:mm")}
                               </span>
                           </span>
@@ -83,7 +84,7 @@ const Messages = ({intialMessages,sessionId,sessionImage,chatPartner,chatId}: Pr
                             referrerPolicy='no-referrer'
                             className="rounded-full"
                           />
-                        </div>                      
+                        </div>     
                     </div>
 
                   </div>

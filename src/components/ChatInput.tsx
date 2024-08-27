@@ -44,7 +44,7 @@ const ChatInput = ({ chatPartner,chatId }: Props) => {
                         sendMessage()
                     }
                 }}
-                placeholder={`Message ${chatPartner.name}`}
+                placeholder={`Message ${chatPartner?.name}`}
                 onChange={(e) => setInput(e.target.value)}
                 className='block w-full resize-none border-0 bg-transparent text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:py-1.5 sm:text-sm sm:leading-6'
             />
