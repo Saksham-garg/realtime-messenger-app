@@ -1,4 +1,4 @@
-import { cn } from '@/utils/utils'
+import { chatHrefConstructor, cn } from '@/utils/utils'
 import Image from 'next/image'
 import React from 'react'
 import toast, { type Toast } from 'react-hot-toast'
@@ -24,7 +24,7 @@ const UnseenChatToast = ({t,sessionId,senderId,senderImg,senderName,senderMessag
     )}
     >
         <a 
-        href={`/dashboard/chat/${sessionId}/${senderId}`}
+        href={`/dashboard/chat/${chatHrefConstructor(sessionId,senderId)}`}
         onClick={() => toast.dismiss(t.id)}
         className='flex-1 w-0 p-1'
         >
