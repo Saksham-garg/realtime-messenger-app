@@ -31,12 +31,24 @@ export async function POST(req:Request){
         if(!hasFriendRequest){
             return new Response("No Friend Request",{ status: 400 })
         }
-        
         // notify added user
-        await pusherServer.trigger(pusherKey(`user:${idToAdd}:friends`),'new_friend',{})
-        db.sadd(`user:${session.user.id}:friends`,idToAdd)
-        db.sadd(`user:${idToAdd}:friends`,session.user.id)
-        db.srem(`user:${session.user.id}:incoming_friend_request`,idToAdd)
+        const [ userRaw,friendRaw ] = (await Promise.all([
+            fetchRedis('get',`user:${session.user.id}`),
+            fetchRedis('get',`user:${idToAdd}`)
+        ])) as [string,string]
+        
+        const userData = JSON.parse(userRaw)
+        const friendData = JSON.parse(friendRaw)
+
+        await Promise.all([
+            pusherServer.trigger(pusherKey(`user:${idToAdd}:friends`),'new_friend',userData),
+            pusherServer.trigger(pusherKey(`user:${session.user.id}:friends`),'new_friend',friendData),
+            db.sadd(`user:${session.user.id}:friends`,idToAdd),
+            db.sadd(`user:${idToAdd}:friends`,session.user.id),
+            db.srem(`user:${session.user.id}:incoming_friend_request`,idToAdd)
+        ])
+
+
         return new Response('OK')
     } catch (error) {
         console.log(error)

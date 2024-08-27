@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import React,{ useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import UnseenChatToast from './UnseenChatToast'
+import { Message } from '@/utils/validators/message'
 
 type Props = {
     friends: User[],
@@ -13,7 +14,7 @@ type Props = {
 }
 
 interface ExtendedMessage extends Message {
-    senderImage:string
+    senderImg:string
     senderName:string
 }
 
@@ -21,7 +22,7 @@ const SidebarChatList = ({ friends,sessionId }: Props) => {
     const router = useRouter()
     const pathname = usePathname()
     const [ unseenMessages,setUnseenMessages ] = useState<Message[]>([])
-
+    const [ activeChats,setActiveChats ] = useState<User[]>(friends)
     useEffect(() => {
       if(pathname?.includes('chat')){
         setUnseenMessages((prev) => {
@@ -38,13 +39,12 @@ const SidebarChatList = ({ friends,sessionId }: Props) => {
             const shouldNotify = (pathname !== `/dashboard/chat/${chatHrefConstructor(sessionId,message.senderId)}`)
 
             if(!shouldNotify) return
-
             toast.custom((t) => {
                 return <UnseenChatToast 
                     t={t}
                     sessionId={sessionId}
                     senderId={message.senderId}
-                    senderImg={message.senderImage}
+                    senderImg={message.senderImg}
                     senderName={message.senderName}
                     senderMessage={message.text}
                 />
@@ -53,8 +53,8 @@ const SidebarChatList = ({ friends,sessionId }: Props) => {
             setUnseenMessages((prev) => [...prev,message])
         }
 
-        const friendHandler = () => {
-            router.refresh()
+        const friendHandler = (new_friend:User) => {
+           setActiveChats((prev) => [...prev,new_friend])
         }
 
         pusherClient.bind('new_message',chatHandler)
@@ -72,7 +72,7 @@ const SidebarChatList = ({ friends,sessionId }: Props) => {
   return (
     <ul role='list' className='max-h-[25rem] overflow-y-auto -mx-2 space-y-1'>
         {
-            friends.sort().map((friend) => {
+            activeChats.sort().map((friend) => {
                 const unseenMessagesCount = unseenMessages.filter((message) => message.senderId === friend.id).length 
 
                 return (
@@ -81,7 +81,7 @@ const SidebarChatList = ({ friends,sessionId }: Props) => {
                             {friend.name}
                             {
                                 unseenMessagesCount > 0 ? (
-                                    <div className="bg-indigo-600 font-medium text-xs h-4 w-4 rounded-full text-white flex items-center justify-center"></div>
+                                    <div className="bg-indigo-600 font-medium text-xs h-5 w-5 rounded-full text-white flex items-center justify-center">{unseenMessagesCount}</div>
                                 ):null
                             }
                         </a>

@@ -13,12 +13,10 @@ const page = async(props: Props) => {
     if(!session) notFound()
 
     const incomingSenderIds = (await fetchRedis('smembers',`user:${session.user.id}:incoming_friend_request`) as string[])
-
     const incomingFriendRequests = await Promise.all(
         incomingSenderIds.map(async(senderId) => {
-            const sender = await fetchRedis('get',`user:${senderId}`) as string
+            const sender = (await fetchRedis('get',`user:${senderId}`)) as string
             const senderParsed = JSON.parse(sender) as User
-
             return {
                 sendersId:senderId,
                 sendersEmail:senderParsed.email

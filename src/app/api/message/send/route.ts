@@ -38,7 +38,7 @@ export async function POST(req: Request){
         const friendId = session.user.id == userId1 ? userid2 : userId1
 
         const friendsList = (await fetchRedis('smembers',`user:${session.user.id}:friends`)) as string[]
-        console.log(friendsList)
+
         const isFriends = friendsList.includes(friendId)
         if(!isFriends){
             return new Response("Cannot send message to unknown user.",{ status: 400 })
@@ -65,7 +65,13 @@ export async function POST(req: Request){
         const message = messageValidator.parse(messageData)
 
         await pusherServer.trigger(pusherKey(`chat:${chatId}`),'incoming-message',message)
-        await pusherServer.trigger(pusherKey(`user:${friendId}:chats`),'new_messsage',{
+        await pusherServer.trigger(pusherKey(`user:${friendId}:chats`),'new_message',{
+            ...message,
+            senderImg:sender.image,
+            senderName:sender.name
+        })
+    
+        console.log({
             ...message,
             senderImg:sender.image,
             senderName:sender.name
@@ -81,7 +87,7 @@ export async function POST(req: Request){
         if(error instanceof Error){
             return new Response(error.message,{ status:500 })
         }        
-
+        console.log(error)  
         return new Response("Internal Server Error",{ status:500 })
     }
 }
