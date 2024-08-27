@@ -2,7 +2,7 @@ import ChatInput from '@/components/ChatInput'
 import Messages from '@/components/Messages'
 import { fetchRedis } from '@/helpers/redis'
 import { authOptions } from '@/utils/auth'
-import { messageArrayValidator } from '@/utils/validators/message'
+import { Message, messageArrayValidator } from '@/utils/validators/message'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
@@ -19,10 +19,8 @@ const getChatMessages = async (chatId: string) => {
         const result: string[] = await fetchRedis('zrange', `chat:${chatId}:messages`, 0, -1)
 
         const dbMessages = result.map((message) => JSON.parse(message) as Message)
-
-        const reversedMessages = dbMessages.reverse()
-        const messages = messageArrayValidator.parse(reversedMessages)
-        return messages
+        
+        return dbMessages
 
     } catch (error) {
         notFound()
@@ -49,20 +47,20 @@ const page = async ({ params }: Props) => {
                 <div className="relative flex items-center space-x-4">
                     <div className="relative">
                         <div className="relative w-8 h-8 sm:w-12 sm:h-12">
-                            <Image 
+                            <Image  
                             fill
                             referrerPolicy='no-referrer'
-                            alt={`${chatPartner.name} profile photo`}
-                            src={chatPartner.image}
+                            alt={`${chatPartner?.name} profile photo`}
+                            src={chatPartner?.image}
                             className='rounded-full'
                             />
                         </div>
                     </div>
                     <div className="flex flex-col leading-tight">
                         <div className="text-xl flex items-center">
-                            <span className='text-gray-700 mr-3 font-semibold'>{chatPartner.name}</span>
+                            <span className='text-gray-700 mr-3 font-semibold'>{chatPartner?.name}</span>
                         </div>
-                        <span className='text-sm text-gray-600'>{chatPartner.email}</span>
+                        <span className='text-sm text-gray-600'>{chatPartner?.email}</span>
                     </div>
                 </div>
             </div>

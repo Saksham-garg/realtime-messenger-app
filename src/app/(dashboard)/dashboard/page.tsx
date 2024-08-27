@@ -39,7 +39,7 @@ const page = async ({}) => {
       {friendsWithLastMessage.length === 0 ? (
         <p className='text-sm text-zinc-500'>Nothing to show here...</p>
       ) : (
-        friendsWithLastMessage.map((friend) => (
+        friendsWithLastMessage?.map((friend) => (
           <div
             key={friend.id}
             className='relative bg-zinc-50 border border-zinc-200 p-3 rounded-md'>
@@ -58,8 +58,8 @@ const page = async ({}) => {
                   <Image
                     referrerPolicy='no-referrer'
                     className='rounded-full'
-                    alt={`${friend.name} profile picture`}
-                    src={friend.image}
+                    alt={`${friend?.name} profile picture`}
+                    src={friend?.image}
                     fill
                   />
                 </div>
