@@ -22,7 +22,7 @@ const ChatInput = ({ chatPartner,chatId }: Props) => {
         setIsLoading(true)
 
         try {
-            const response = axios.post(`/api/message/send`,{text:input,chatId})
+            const response = await axios.post(`/api/message/send`,{text:input,chatId})
             setInput('')
             textAreaRef.current?.focus()
         } catch (error) {
