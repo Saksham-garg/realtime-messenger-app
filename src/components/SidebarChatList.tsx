@@ -82,13 +82,13 @@ const SidebarChatList = ({ friends, sessionId }: Props) => {
         ).length;
 
         return (
-          <li key={friend.id}>
+          <li key={friend.id} className="rounded-lg bg-gray-50 border border-indigo-200">
             <a
               href={`/dashboard/chat/${chatHrefConstructor(
                 sessionId,
                 friend.id
               )}`}
-              className="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+              className="text-gray-700 hover:text-indigo-600 hover:bg-gray-100 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
             >
               <Image
                 width={20}
